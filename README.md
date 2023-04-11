@@ -13,8 +13,8 @@ CharlesBot is a Telegram bot that leverages the OpenAI API to chat with users an
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your_username/charles_bot.git
-cd charles_bot
+git clone https://github.com/Kryohi/GPT_TG-Bot.git
+cd GPT_TG-Bot
 ```
 
 2. Create a virtual environment and activate it:
@@ -43,7 +43,7 @@ export TG_USERID="your_telegram_user_id"
 # set TG_USERID="your_telegram_user_id"
 ```
 
-If you don't know how to create a Telegram bot and obtain its API key, follow the instructions in the [Telegram BotFather documentation](https://core.telegram.org/bots#botfather).
+If you don't know how to create a Telegram bot and obtain its API key, follow the instructions in the [Telegram BotFather documentation](https://core.telegram.org/bots#botfather). For the OpenAI API keys: https://platform.openai.com/account/api-keys.
 
 ## Usage
 
@@ -62,6 +62,13 @@ Generate image: a beautiful mountain landscape
 ```
 
 The bot will generate and send back an image based on the description.
+
+## Future Development
+
+- [ ] Use different models to generate images (Stable Diffusion?)
+- [ ] Fix audio transcription.
+- [ ] Access to the web.
+- [ ] PineCone integration.
 
 ## License
 
