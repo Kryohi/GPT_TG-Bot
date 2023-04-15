@@ -27,7 +27,7 @@ source venv/bin/activate    # On Windows use 'venv\Scripts\activate'
 3. Install the required packages:
 
 ```bash
-pip install --user aiogram openai
+pip install --user aiogram openai pydub
 ```
 
 4. Set up the environment variables with your OpenAI API key, Telegram Bot API key, and your Telegram user ID:
@@ -63,10 +63,13 @@ Generate image: a beautiful mountain landscape
 
 The bot will generate and send back an image based on the description.
 
+If you answer to one of its messages with a voice message, it will answer as if you had written it.
+
+
 ## Future Development
 
-- [ ] Use different models to generate images (Stable Diffusion?)
-- [ ] Fix audio transcription.
+- [ ] Use a different model to generate images (Stable Diffusion?)
+- [x] Fix audio transcription.
 - [ ] Access to the web.
 - [ ] PineCone integration.
 
