@@ -66,7 +66,7 @@ The bot will generate and send back an image based on the description.
 ## Future Development
 
 - [ ] Use different models to generate images (Stable Diffusion?)
-- [ ] Fix audio transcription.
+- [x] Fix audio transcription.
 - [ ] Access to the web.
 - [ ] PineCone integration.
 
