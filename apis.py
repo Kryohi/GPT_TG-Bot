@@ -1,8 +1,11 @@
+import os
+import tempfile
+from aiogram import Bot
 import asyncio
 import openai
 import requests
 from io import BytesIO
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, TELEGRAM_API_KEY_CHATBOT
 
 openai.api_key = OPENAI_API_KEY
 
@@ -37,33 +40,37 @@ async def generate_image(prompt):
     return image_url
 
 
-# Audio message support
-async def transcribe_audio(file_id):
-    file_info = await bot.get_file(file_id)
-    file_path = file_info.file_path
-    file_url = f"https://api.telegram.org/file/bot{API_TOKEN}/{file_path}"
+import soundfile as sf
+from pydub import AudioSegment
+
+# Function to call the Whisper API and return the transcribed text
+async def transcribe_audio(file_path):
+    file_url = f"https://api.telegram.org/file/bot{TELEGRAM_API_KEY_CHATBOT}/{file_path}"
 
     # Download the voice file
     response = requests.get(file_url)
 
-    # Save the voice file temporarily
-    with tempfile.NamedTemporaryFile(delete=False) as temp_audio:
+    # Save the temporary voice file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".oga") as temp_audio:
         temp_audio.write(response.content)
         temp_audio_filename = temp_audio.name
 
-    # Call the Whisper ASR API
-    with open(temp_audio_filename, "rb") as audio_file:
-        response = openai.Speech.create(
-            engine="whisper",
-            file=audio_file,
-            language="en-US",
-            sample_rate=16000,
-        )
+    # Convert the audio format to WAV
+    audio = AudioSegment.from_ogg(temp_audio_filename)
+    converted_audio_filename = os.path.splitext(temp_audio_filename)[0] + ".wav"
+    audio.export(converted_audio_filename, format="wav")
 
-    # Delete the temporary voice file
+    print("Calling the Whisper API to transcribe the message...")
+
+    # Call the OpenAI API
+    with open(converted_audio_filename, "rb") as audio_file:
+        response = openai.Audio.transcribe("whisper-1", audio_file)
+
+    # Delete the temporary voice files
     os.unlink(temp_audio_filename)
+    os.unlink(converted_audio_filename)
 
     # Get the transcribed text
-    transcribed_text = response["choices"][0]["text"]
-    return transcribed_text
+    transcribed_text = response["text"]
 
+    return transcribed_text
