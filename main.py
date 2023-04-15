@@ -29,7 +29,8 @@ if __name__ == "__main__":
 
     # Register the message handler
     # dp.register_message_handler(on_message, content_types=types.ContentTypes.TEXT | types.ContentTypes.PHOTO)
-    dp.register_message_handler(lambda message: on_message(message, bot), content_types=types.ContentTypes.TEXT | types.ContentTypes.PHOTO)
+    dp.register_message_handler(lambda message: on_message(message, bot), 
+                                content_types=types.ContentTypes.ANY)#.TEXT | types.ContentTypes.PHOTO | types.ContentType.VOICE | types.ContentType.AUDIO)
 
     # Start the bot
     executor.start_polling(dp, on_startup=on_startup)

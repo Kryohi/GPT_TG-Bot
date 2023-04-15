@@ -1,6 +1,6 @@
 from aiogram import Bot, Dispatcher, types
 from config import TG_USERID
-from apis import chat_with_gpt, generate_image
+from apis import chat_with_gpt, generate_image, transcribe_audio
 import requests
 from io import BytesIO
 
@@ -23,8 +23,13 @@ async def on_message(message: types.Message, bot: Bot):
     my_user_id = int(TG_USERID)
     bot_data = await bot.get_me()
     bot_id = bot_data.id
+    mentioned_bot = False
 
     print(f"Message received from {user_id}")
+
+    # Check and print the content type of the received message
+    message_type = message.content_type
+    print(f"Message type: {message_type}")
 
     if user_id == my_user_id:
         print("User is you")
@@ -40,14 +45,29 @@ async def on_message(message: types.Message, bot: Bot):
             print(f"Error while checking chat member: {e}")
             return
 
-    mentioned_bot = bot_data.username in message.text
+    if message_type == "text":
+        mentioned_bot = bot_data.username in message.text
+    
     is_direct_reply = (
         message.reply_to_message and message.reply_to_message.from_user.id == bot_id
     )
 
 
     if is_direct_reply or mentioned_bot:
-        input_text = message.text
+
+        
+
+        if message_type == "voice":
+            print("Voice message detected")
+            # Get voice file ID and transcribe it
+            voice_file_id = message.voice.file_id
+            file_info = await bot.get_file(voice_file_id)
+            file_path = file_info.file_path
+            input_text = await transcribe_audio(file_path)
+        else:
+            input_text = message.text
+
+        # remove the chatbot tag from the input 
         if mentioned_bot:
             mention = f"@{bot_data.username}"
             input_text = input_text.replace(mention, "").strip()
