@@ -24,19 +24,22 @@ async def chat_with_gpt(conversation_history):
     return response_text
 
 
+# Async function to call the updated API for image generation
 async def generate_image(prompt):
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(
         None,
         lambda: openai.Image.create(
+            model="dall-e-3",
             prompt=prompt,
-            n=1,
-            size="512x512"
+            size="1024x1024",
+            quality="standard",
+            n=1
         )
     )
 
     # Get the image URL
-    image_url = response['data'][0]['url']  # response.choices[0].image_url
+    image_url = response['data'][0]['url']
     return image_url
 
 
